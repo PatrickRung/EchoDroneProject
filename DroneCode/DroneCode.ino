@@ -1,48 +1,75 @@
 #include <Servo.h>
+#include <Adafruit_MPU6050.h>
+#include <Adafruit_Sensor.h>
+#include <Wire.h>
 
+Adafruit_MPU6050 mpu;
 
-Servo ESC;
+Servo ESC;     // create servo object to control the ESC
 
+int potValue;  // value from the analog pin
+
+int currentXAngle;
+int totalAdjustment;
 
 void setup() {
-Serial.begin(9600);
+  // Attach the ESC on pin 9
+  currentXAngle = 0;
+  totalAdjustment = 0;
+  Serial.begin(115200);
+  ESC.attach(9,1000,2000); // (pin, min pulse width, max pulse width in microseconds) 
+  while (!Serial) {
+    delay(10); // will pause Zero, Leonardo, etc until serial console opens
+  }
+
+  // Try to initialize!
+  if (!mpu.begin()) {
+    Serial.println("Failed to find MPU6050 chip");
+    while (1) {
+      delay(10);
+    }
+  }
+
+  mpu.setAccelerometerRange(MPU6050_RANGE_16_G);
+  mpu.setGyroRange(MPU6050_RANGE_250_DEG);
+  mpu.setFilterBandwidth(MPU6050_BAND_21_HZ);
+  Serial.println("");
+  delay(100);
 }
 
-
 void loop() {
-  while (Serial.available() > 0) {
-    int val = Serial.parseInt();
-    if (val == 1) {
-      Serial.println("arming sequence initiated");
-      ESC.attach(A1, 1000, 2000);
-      delay(500);
-      ESC.writeMicroseconds(2000);
-      delay(500);
-      ESC.writeMicroseconds(1000);
-      delay(5000);
-      ESC.writeMicroseconds(1000);
-      Serial.println("done");
+  
+  potValue = analogRead(A0);   // reads the value of the potentiometer (value between 0 and 1023)
+  potValue = map(potValue, 0, 1023, 1000, 1100);   // scale it to use it with the servo library (value between 0 and 180)
+  //the actual value for this esc is 35 = min puls and max is something idk (temp is 215)
+  //in microseconds it is def above 1000
+     // Send the signal to the ESC
 
-    } else if (val == 2) {
-      Serial.println("spin at 10% speed");
-      ESC.writeMicroseconds(1100);
-      delay(1000);
-      Serial.println("spin at 20% speed");
-      ESC.writeMicroseconds(1200);
-      delay(1000);
-      Serial.println("spin at 30% speed");
-      ESC.writeMicroseconds(1300);
-      delay(5000);
-      Serial.println("spin at 40% speed");
-      ESC.writeMicroseconds(1400);
-      delay(5000);
-      ESC.writeMicroseconds(1000);
-      Serial.println("done");
-    } 
-    else if(val == 3){
-      Serial.println("detatching");
-      ESC.detach();
-    }
-    
+  
+  /* Get new sensor events with the readings */
+  sensors_event_t a, g, temp;
+  mpu.getEvent(&a, &g, &temp);
+
+
+  Serial.print("Angle:");
+  currentXAngle = a.acceleration.y * 9.25925925926;
+  
+
+  if(currentXAngle < -5) {
+    totalAdjustment += 0.01;
   }
+  else if(currentXAngle > 5) {
+    totalAdjustment -= 0.01;
+  }
+  potValue += totalAdjustment;
+  if(potValue > 995 && potValue < 1005) {
+    potValue = 1000;
+  }
+  ESC.writeMicroseconds(potValue); 
+
+  Serial.print(currentXAngle);
+  Serial.print(" totalAdjustment:");
+  Serial.print(totalAdjustment);
+  Serial.print(" Freqeuncy: ");
+  Serial.println(potValue);
 }
