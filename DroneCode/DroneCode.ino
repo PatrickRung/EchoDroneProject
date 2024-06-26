@@ -56,10 +56,10 @@ void loop() {
   
 
   if(currentXAngle < -5) {
-    totalAdjustment += 0.01;
+    totalAdjustment -= currentXAngle * 0.002;
   }
   else if(currentXAngle > 5) {
-    totalAdjustment -= 0.01;
+    totalAdjustment += currentXAngle * 0.002;
   }
   potValue += totalAdjustment;
   if(potValue > 995 && potValue < 1005) {
