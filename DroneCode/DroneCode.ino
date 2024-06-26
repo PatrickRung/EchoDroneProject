@@ -40,7 +40,7 @@ void setup() {
 void loop() {
   
   potValue = analogRead(A0);   // reads the value of the potentiometer (value between 0 and 1023)
-  potValue = map(potValue, 0, 1023, 1000, 1100);   // scale it to use it with the servo library (value between 0 and 180)
+  potValue = map(potValue, 0, 1023, 900, 1100);   // scale it to use it with the servo library (value between 0 and 180)
   //the actual value for this esc is 35 = min puls and max is something idk (temp is 215)
   //in microseconds it is def above 1000
      // Send the signal to the ESC
@@ -52,14 +52,14 @@ void loop() {
 
 
   Serial.print("Angle:");
-  currentXAngle = a.acceleration.y * 9.25925925926;
+  currentXAngle = a.acceleration.y;
   
 
   if(currentXAngle < -5) {
-    totalAdjustment -= currentXAngle * 0.002;
+    totalAdjustment += currentXAngle;
   }
   else if(currentXAngle > 5) {
-    totalAdjustment += currentXAngle * 0.002;
+    totalAdjustment += currentXAngle;
   }
   potValue += totalAdjustment;
   if(potValue > 995 && potValue < 1005) {
@@ -72,4 +72,6 @@ void loop() {
   Serial.print(totalAdjustment);
   Serial.print(" Freqeuncy: ");
   Serial.println(potValue);
+
+  delay(150);
 }
