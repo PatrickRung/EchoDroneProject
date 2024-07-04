@@ -14,6 +14,7 @@ typedef struct struct_message {
 
 // Create a structured object
 struct_message myData;
+int motorOneSpeed, motorTwoSpeed, motorThreeSpeed, motorFourSpeed; 
 
 
 // Callback function executed when data is received
@@ -23,16 +24,28 @@ void OnDataRecv(const esp_now_recv_info_t *mac, const uint8_t *incomingData, int
   Serial.println(len);
   Serial.print("Character Value: ");
   Serial.println(myData.a);
+  motorOneSpeed = myData.a;
   Serial.print("Integer Value: ");
   Serial.println(myData.b);
+  motorTwoSpeed = myData.b;
   Serial.print("Float Value: ");
   Serial.println(myData.c);
+  motorThreeSpeed = myData.c;
   Serial.print("Boolean Value: ");
   Serial.println(myData.d);
+  motorFourSpeed = myData.d;
   Serial.println();
+  analogWrite(26, motorOneSpeed);
+  analogWrite(26, motorTwoSpeed);
+  analogWrite(26, motorThreeSpeed);
+  analogWrite(26, motorFourSpeed);
 }
 
 void setup() {
+  motorOneSpeed = 0;
+  motorTwoSpeed = 0;
+  motorThreeSpeed = 0;
+  motorFourSpeed = 0;
   // Set up Serial Monitor
   Serial.begin(115200);
 
@@ -50,7 +63,10 @@ void setup() {
 
   // Register callback function
   esp_now_register_recv_cb(OnDataRecv);
+
+  pinMode(26, OUTPUT);
 }
 
 void loop() {
+
 }

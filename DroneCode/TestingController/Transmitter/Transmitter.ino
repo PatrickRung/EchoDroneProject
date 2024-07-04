@@ -93,5 +93,5 @@ void loop() {
   else {
     Serial.println("Sending error");
   }
-  delay(50);
+  delay(30);
 }
