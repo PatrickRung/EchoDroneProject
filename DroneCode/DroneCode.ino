@@ -73,5 +73,6 @@ void loop() {
   Serial.print(" Freqeuncy: ");
   Serial.println(potValue);
 
-  delay(150);
+  //if this is too fast then the board might burnout
+  delay(1000);
 }
