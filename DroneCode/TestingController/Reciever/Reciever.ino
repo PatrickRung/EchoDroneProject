@@ -14,38 +14,8 @@ typedef struct struct_message {
 
 // Create a structured object
 struct_message myData;
-int motorOneSpeed, motorTwoSpeed, motorThreeSpeed, motorFourSpeed; 
-
-
-// Callback function executed when data is received
-void OnDataRecv(const esp_now_recv_info_t *mac, const uint8_t *incomingData, int len) {
-  memcpy(&myData, incomingData, sizeof(myData));
-  Serial.print("Data received: ");
-  Serial.println(len);
-  Serial.print("Character Value: ");
-  Serial.println(myData.a);
-  motorOneSpeed = myData.a;
-  Serial.print("Integer Value: ");
-  Serial.println(myData.b);
-  motorTwoSpeed = myData.b;
-  Serial.print("Float Value: ");
-  Serial.println(myData.c);
-  motorThreeSpeed = myData.c;
-  Serial.print("Boolean Value: ");
-  Serial.println(myData.d);
-  motorFourSpeed = myData.d;
-  Serial.println();
-  analogWrite(26, motorOneSpeed);
-  analogWrite(26, motorTwoSpeed);
-  analogWrite(26, motorThreeSpeed);
-  analogWrite(26, motorFourSpeed);
-}
 
 void setup() {
-  motorOneSpeed = 0;
-  motorTwoSpeed = 0;
-  motorThreeSpeed = 0;
-  motorFourSpeed = 0;
   // Set up Serial Monitor
   Serial.begin(115200);
 
@@ -65,6 +35,25 @@ void setup() {
   esp_now_register_recv_cb(OnDataRecv);
 
   pinMode(26, OUTPUT);
+}
+
+// Callback function executed when data is received
+void OnDataRecv(const esp_now_recv_info_t *mac, const uint8_t *incomingData, int len) {
+  memcpy(&myData, incomingData, sizeof(myData));
+  Serial.println(len);
+  Serial.print("Character Value: ");
+  Serial.println(myData.a);
+  Serial.print("Integer Value: ");
+  Serial.println(myData.b);
+  Serial.print("Float Value: ");
+  Serial.println(myData.c);
+  Serial.print("Boolean Value: ");
+  Serial.println(myData.d);
+  Serial.println();
+  analogWrite(26, myData.a);
+  analogWrite(26, myData.b);
+  analogWrite(26, myData.c);
+  analogWrite(26, myData.d);
 }
 
 void loop() {

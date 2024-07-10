@@ -3,6 +3,8 @@
 #include <esp_now.h>
 //Pink Address: E4:65:B8:DA:34:04
 //Non Collored Address: D8:13:2A:73:9B:60
+//Replacement NonCollored reciever because the last one burned:
+//e4:65:b8:d8:bc:e0
 
 //Transmitter code/ Initiator 
 //this will be the pink esp32
@@ -11,7 +13,6 @@ int int_value;
 float float_value;
 bool bool_value = true;
 
-//uint8_t broadcastAddress[] = {0xD8, 0x13, 0x2A, 0x73, 0x9B, 0x60}; //nonpink
 uint8_t broadcastAddress[] = {0xE4, 0x65, 0xB8, 0xDA, 0x34, 0x04}; //pink
 
 //In order to send data they must be structured in a struct
@@ -93,5 +94,5 @@ void loop() {
   else {
     Serial.println("Sending error");
   }
-  delay(30);
+  delay(1000);
 }
