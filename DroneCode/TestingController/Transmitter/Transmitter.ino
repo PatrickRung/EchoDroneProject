@@ -1,4 +1,3 @@
-
 #include <WiFi.h>
 #include <esp_now.h>
 //Pink Address: E4:65:B8:DA:34:04
@@ -13,7 +12,7 @@ int int_value;
 float float_value;
 bool bool_value = true;
 
-uint8_t broadcastAddress[] = {0xE4, 0x65, 0xB8, 0xDA, 0x34, 0x04}; //pink
+uint8_t broadcastAddress[] = {0xE4, 0x65, 0xB8, 0xD8, 0xBC, 0xE0}; //reciever MAC address
 
 //In order to send data they must be structured in a struct
 //change the struct to change the data that we want to send in our case it will prob just be 4 integers
@@ -65,6 +64,8 @@ void setup() {
 }
  
  int PotOne, PotTwo, PotThree, PotFour;
+ int minThrottleDuty = 30; //this represents the signal that emulates the 1000ms pwm signal that creates min throttle
+
 
 void loop() {
 
@@ -72,11 +73,12 @@ void loop() {
   PotTwo = analogRead(39);
   PotThree = analogRead(34);
   PotFour = analogRead(35);
-  myData.a = PotOne;
-  myData.b = PotTwo;
-  myData.c = PotThree;
-  myData.d = PotFour;
-  Serial.print(PotOne);
+  //converts from regular potentiometer values (0 - 4095) to PWM duty cycle percentages (0 - 255)
+  myData.a = map(PotOne, 0, 4095, minThrottleDuty, 255);
+  myData.b = map(PotTwo, 0, 4095, minThrottleDuty, 255);
+  myData.c = map(PotThree, 0, 4095, minThrottleDuty, 255);
+  myData.d = map(PotFour, 0, 4095, minThrottleDuty, 255);
+  Serial.print(myData.a);
   Serial.print(" ");
   Serial.print(PotTwo);
   Serial.print(" ");
@@ -94,5 +96,5 @@ void loop() {
   else {
     Serial.println("Sending error");
   }
-  delay(1000);
+  delay(100);
 }
