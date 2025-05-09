@@ -36,9 +36,9 @@ void OnDataRecv(const esp_now_recv_info_t *mac, const uint8_t *incomingData, int
   motorFourSpeed = myData.d;
   Serial.println();
   analogWrite(26, motorOneSpeed);
-  analogWrite(26, motorTwoSpeed);
-  analogWrite(26, motorThreeSpeed);
-  analogWrite(26, motorFourSpeed);
+  // analogWrite(26, motorTwoSpeed);
+  // analogWrite(26, motorThreeSpeed);
+  // analogWrite(26, motorFourSpeed);
 }
 
 void setup() {
