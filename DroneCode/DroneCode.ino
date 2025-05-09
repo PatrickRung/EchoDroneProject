@@ -11,6 +11,11 @@ int currentXAngle;
 int totalAdjustment;
 ESP32PWM pwm;
 
+void writeMicroseconds(int us) {
+  int duty = map(us, 1000, 2000, 3276, 6553);  // 16-bit scale for 50Hz
+  pwm.write(duty);
+}
+
 void setup() {
   // Attach the ESC on pin 9
   currentXAngle = 0;
@@ -42,6 +47,20 @@ void setup() {
   // mpu.setFilterBandwidth(MPU6050_BAND_21_HZ);
   Serial.println("done!");
   delay(100);
+
+
+  for (int us = 1000; us <= 2000; us += 10) {
+    writeMicroseconds(us);
+    delay(50);
+  }
+
+  delay(2000);
+
+  // Gradually decrease throttle
+  for (int us = 2000; us >= 1000; us -= 10) {
+    writeMicroseconds(us);
+    delay(50);
+  }
 }
 
 void loop() {
@@ -78,6 +97,6 @@ void loop() {
   // Serial.print(totalAdjustment);
   // Serial.print(" Freqeuncy: ");
   Serial.println(potValue);
-  pwm.write(potValue);
+  writeMicroseconds(potValue);
   delay(150);
 }
