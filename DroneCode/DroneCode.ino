@@ -25,7 +25,7 @@ void setup() {
 	ESP32PWM::allocateTimer(2);
 	ESP32PWM::allocateTimer(3);
 	Serial.begin(115200);
-	pwm.attachPin(23, 1000, 10); // 1KHz 10 bits
+	pwm.attachPin(23, 50, 11); // 1KHz 10 bits
   // Attatch on port 23 or D23 for PWM
   // Init to 100 as that is default throttle pwm for esc
 
@@ -48,7 +48,7 @@ void loop() {
   
   potValue = analogRead(32);   // reads the value of the potentiometer (value between 0 and 1023)
   // Reads from the D32 or GPIO 32 port on the esp 32
-  potValue = map(potValue, 0, 1023, 900, 1100);   // scale it to use it with the servo library (value between 0 and 180)
+  potValue = map(potValue, 0, 4095, 1000, 2000);   // scale it to use it with the servo library (value between 0 and 180)
   //the actual value for this esc is 35 = min puls and max is something idk (temp is 215)
   //in microseconds it is def above 1000
      // Send the signal to the ESC
